@@ -10,7 +10,10 @@
     <ProjectReference Include="..\C\CLL.csproj" />
     <ProjectReference Include="..\DLL\DLL.csproj" />
     <ProjectReference Include="..\ELL\ELL.csproj" />
+    <ProjectReference Include="..\FLL\FLL.csproj" />
     <ProjectReference Include="..\IA\IA.csproj" />
+    <ProjectReference Include="..\JLL\JLL.csproj" />
+    <ProjectReference Include="..\Student\Student.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,5 +12,14 @@ namespace ELL
         {
             Console.WriteLine($"{typeof(T)}和{typeof(I)}");
         }
+
+        public void Test<W,K>(W t,K i)
+        {
+            Console.WriteLine($"{t.GetType().Name}+{i.GetType().Name}");
+        }
+
+
     }
+
+
 }

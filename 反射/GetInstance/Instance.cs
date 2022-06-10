@@ -5,8 +5,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using BLL;
-
-
+using CLL;
+using DLL;
+using ELL;
+using FLL;
+using JLL;
 
 namespace 反射.GetInstance
 {
@@ -31,7 +34,6 @@ namespace 反射.GetInstance
             B b = v as B;
             Console.Write(v is B);
         }
-
 
         /// <summary>
         /// 通过反射创建对象（有参）
@@ -59,8 +61,6 @@ namespace 反射.GetInstance
             object v2 = Activator.CreateInstance(type, new Object[] {1,"张三" });
         }
 
-
-
         /// <summary>
         /// 通过反射调用私有构造方法创建实例
         /// </summary>
@@ -73,7 +73,6 @@ namespace 反射.GetInstance
             //通过私有方法构建实例
             object v = Activator.CreateInstance(type, true);
         }
-
 
         /// <summary>
         /// 通过反射调用泛型构造方法
@@ -90,7 +89,6 @@ namespace 反射.GetInstance
             object v = Activator.CreateInstance(type1);
 
         }
-
 
         /// <summary>
         /// 通过反射调用方法
@@ -120,5 +118,69 @@ namespace 反射.GetInstance
             //调用方法
             methodInfo.Invoke(v,null);
         }
+
+        /// <summary>
+        /// 通过反射调用私有方法
+        /// </summary>
+        public void Test5()
+        {
+            Assembly assembly = Assembly.LoadFrom("DLL.dll");
+            Type type = assembly.GetType("DLL.D");
+            object v = Activator.CreateInstance(type, true);
+            //私有方法，要制定是是实例方法和非public方法
+            MethodInfo methodInfo = type.GetMethod("Show", BindingFlags.Instance | BindingFlags.NonPublic);
+            methodInfo.Invoke(v,new object[] {"Hello World" });
+        }
+
+        /// <summary>
+        /// 通过泛型调用泛型方法
+        /// </summary>
+        public void Test6()
+        {
+            Assembly assembly = Assembly.LoadFrom("FLL.dll");
+            Type type = assembly.GetType("FLL.F");
+            object v = Activator.CreateInstance(type);
+            MethodInfo methodInfo = type.GetMethod("Test");
+            //确定泛型变量,传入类型
+            var method = methodInfo.MakeGenericMethod(new Type[] { typeof(B) });
+            method.Invoke(v,new object[] { new B()});
+        }
+
+        /// <summary>
+        /// 通过反射构建泛型类并且调用泛型方法
+        /// </summary>
+        public void Test7()
+        {
+            Assembly assembly = Assembly.LoadFrom("ELL.dll");
+            Type type = assembly.GetType("ELL.E`2");
+            //添加泛型类型
+            Type type1 = type.MakeGenericType(new Type[] { typeof(B),typeof(C) });
+            object v = Activator.CreateInstance(type1);
+            MethodInfo methodInfo = type1.GetMethod("Test");
+            MethodInfo methodInfo1 = methodInfo.MakeGenericMethod(new Type[] { typeof(J), typeof(int) });
+            methodInfo1.Invoke(v, new object[] { new J(), 1 });
+        }
+
+        /// <summary>
+        /// 通过反射来操作实体类字段
+        /// </summary>
+        public void Test8()
+        {
+            Assembly assembly = Assembly.LoadFrom("Student.dll");
+            Type type = assembly.GetType("Student.StudentClass");
+            object v = Activator.CreateInstance(type);
+            //方式一，遍历循环
+            foreach (var i in type.GetProperties())
+            {
+                //输出类型+属性名称
+                Console.WriteLine(i.PropertyType+i.Name+i.GetValue(v));
+            }
+            //方式二，直接通过属性名获取
+            PropertyInfo[] propertyInfos = type.GetProperties();
+            PropertyInfo propertyInfo = type.GetProperty("Name");
+            Console.WriteLine(propertyInfo.GetValue(v));
+        }
+
+
     }
 }

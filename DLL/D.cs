@@ -13,5 +13,9 @@ namespace DLL
         {
             Console.WriteLine("私有构建函数");
         }
+        private void Show(string msg)
+        {
+            Console.WriteLine("私有方法"+msg);
+        }
     }
 }
